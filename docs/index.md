@@ -2,11 +2,11 @@
 
 ### Table of Contents
 
--   [constructor][1]
--   [constructor][2]
--   [constructor][3]
--   [getFuncRef][4]
--   [constructor][5]
+-   [ID][1]
+-   [FunctionRef][2]
+-   [ModuleRef][3]
+    -   [getFuncRef][4]
+-   [Message][5]
 
 ## 
 
@@ -16,92 +16,87 @@ a cbor decoder for the objects
 
 Type: [Object][7]
 
-## constructor
+## ID
 
-[index.js:47-49][8]
+[index.js:45-56][8]
 
 an ID
 
 **Parameters**
 
--   `id` **[Buffer][9]** the id as an buffer
+-   `id`  
 
-## constructor
+## FunctionRef
 
-[index.js:64-69][10]
+[index.js:61-83][9]
 
 A function reference
 
 **Parameters**
 
 -   `opts` **[Object][7]** 
-    -   `opts.identifier` **any** the function's identifier
-    -   `opts.actorID` **ID** the id of the actor
-    -   `opts.params` **[Array][11]** the params of the function
 
-## constructor
+## ModuleRef
 
-[index.js:87-90][12]
+[index.js:88-116][10]
 
 A module reference
 
 **Parameters**
 
 -   `exports` **[Object][7]** a map of exported function to params for the funcion if any
--   `id` **ID** the id of the actor
+-   `id` **[ID][11]** the id of the actor
 
-## getFuncRef
+### getFuncRef
 
-[index.js:97-105][13]
+[index.js:103-111][12]
 
 return a function refernce given the name of the function
 
 **Parameters**
 
--   `name` **[string][14]** 
+-   `name` **[string][13]** 
 
-Returns **FunctionRef** 
+Returns **[FunctionRef][14]** 
 
-## constructor
+## Message
 
-[index.js:119-133][15]
+[index.js:121-153][15]
+
+**Extends EventEmitter**
 
 This implements Messages for Primea
 
 **Parameters**
 
 -   `opts` **[Object][7]** 
-    -   `opts.data` **[ArrayBuffer][16]** the payload of the message
-    -   `opts.caps` **[Array][11]&lt;[Object][7]>** an array of capabilities to send in the message
 
-[1]: #constructor
+[1]: #id
 
-[2]: #constructor-1
+[2]: #functionref
 
-[3]: #constructor-2
+[3]: #moduleref
 
 [4]: #getfuncref
 
-[5]: #constructor-3
+[5]: #message
 
-[6]: https://github.com/primea/js-primea-objects/blob/136ef4bd7ca697c515688fa0a7b42c49930b5710/index.js#L11-L18 "Source code on GitHub"
+[6]: https://github.com/primea/js-primea-objects/blob/a705e6ebfe30e96dda8d5d7b2d25007d23fac40b/index.js#L11-L18 "Source code on GitHub"
 
 [7]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[8]: https://github.com/primea/js-primea-objects/blob/136ef4bd7ca697c515688fa0a7b42c49930b5710/index.js#L47-L49 "Source code on GitHub"
+[8]: https://github.com/primea/js-primea-objects/blob/a705e6ebfe30e96dda8d5d7b2d25007d23fac40b/index.js#L45-L56 "Source code on GitHub"
 
-[9]: https://nodejs.org/api/buffer.html
+[9]: https://github.com/primea/js-primea-objects/blob/a705e6ebfe30e96dda8d5d7b2d25007d23fac40b/index.js#L61-L83 "Source code on GitHub"
 
-[10]: https://github.com/primea/js-primea-objects/blob/136ef4bd7ca697c515688fa0a7b42c49930b5710/index.js#L64-L69 "Source code on GitHub"
+[10]: https://github.com/primea/js-primea-objects/blob/a705e6ebfe30e96dda8d5d7b2d25007d23fac40b/index.js#L88-L116 "Source code on GitHub"
 
-[11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[11]: #id
 
-[12]: https://github.com/primea/js-primea-objects/blob/136ef4bd7ca697c515688fa0a7b42c49930b5710/index.js#L87-L90 "Source code on GitHub"
+[12]: https://github.com/primea/js-primea-objects/blob/a705e6ebfe30e96dda8d5d7b2d25007d23fac40b/index.js#L103-L111 "Source code on GitHub"
 
-[13]: https://github.com/primea/js-primea-objects/blob/136ef4bd7ca697c515688fa0a7b42c49930b5710/index.js#L97-L105 "Source code on GitHub"
+[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[14]: #functionref
 
-[15]: https://github.com/primea/js-primea-objects/blob/136ef4bd7ca697c515688fa0a7b42c49930b5710/index.js#L119-L133 "Source code on GitHub"
-
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+[15]: https://github.com/primea/js-primea-objects/blob/a705e6ebfe30e96dda8d5d7b2d25007d23fac40b/index.js#L121-L153 "Source code on GitHub"

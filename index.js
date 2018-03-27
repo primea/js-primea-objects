@@ -39,9 +39,11 @@ const decoder = new cbor.Decoder({
   }
 })
 
+/**
+ * an ID
+ */
 class ID {
-  /**
-   * an ID
+  /*
    * @param {Buffer} id - the id as an buffer
    */
   constructor (id) {
@@ -53,9 +55,11 @@ class ID {
   }
 }
 
+/**
+ * A function reference
+ */
 class FunctionRef {
   /**
-   * A function reference
    * @param {Object} opts
    * @param {*} opts.identifier - the function's identifier
    * @param {ID} opts.actorID - the id of the actor
@@ -78,9 +82,11 @@ class FunctionRef {
   }
 }
 
+/**
+ * A module reference
+ */
 class ModuleRef {
   /**
-   * A module reference
    * @param {Object} exports - a map of exported function to params for the funcion if any
    * @param {ID} id - the id of the actor
    */
@@ -109,9 +115,11 @@ class ModuleRef {
   }
 }
 
+/**
+ * This implements Messages for Primea
+ */
 class Message extends EventEmitter {
   /**
-   * This implements Messages for Primea
    * @param {Object} opts
    * @param {ArrayBuffer} opts.data - the payload of the message
    * @param {Array<Object>} opts.caps - an array of capabilities to send in the message
