@@ -1,0 +1,38 @@
+{
+  "name": "genericmodule",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc npm test",
+    "lint": "standard",
+    "test": "node ./tests/index.js",
+    "build:docs": "documentation build --github  -f md ./index.js > ./docs/index.md"
+  },
+  "keywords": [
+    ""
+  ],
+  "author": "mjbecze <mjbecze@gmail.com>",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "borc": "git+https://github.com:dignifiedquire/borc.git#fix/nested-array",
+    "events": "^2.0.0",
+    "safe-buffer": "^5.1.1"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "documentation": "^6.1.0",
+    "nyc": "^11.6.0",
+    "standard": "^11.0.1",
+    "tape": "^4.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wanderer/genericmodule.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wanderer/genericmodule/issues"
+  },
+  "homepage": "https://github.com/wanderer/genericmodule"
+}
