@@ -1,7 +1,7 @@
 {
-  "name": "genericmodule",
+  "name": "primea-objects",
   "version": "0.0.0",
-  "description": "",
+  "description": "Object helper classes for Primea's system Objects",
   "main": "index.js",
   "scripts": {
     "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
@@ -11,7 +11,7 @@
     "build:docs": "documentation build --github  -f md ./index.js > ./docs/index.md"
   },
   "keywords": [
-    ""
+    "primea"
   ],
   "author": "mjbecze <mjbecze@gmail.com>",
   "license": "MPL-2.0",
@@ -29,10 +29,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:wanderer/genericmodule.git"
+    "url": "git@github.com:primea/primea-objects.git"
   },
   "bugs": {
-    "url": "https://github.com/wanderer/genericmodule/issues"
+    "url": "https://github.com/primea/primea-objects/issues"
   },
-  "homepage": "https://github.com/wanderer/genericmodule"
+  "homepage": "https://github.com/primea/primea-objects"
 }
