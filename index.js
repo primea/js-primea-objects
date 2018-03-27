@@ -17,6 +17,10 @@ const DEFAULTS = {
   func: new cbor.Tagged(TAGS.func, 0)
 }
 
+/**
+ * a cbor decoder for the objects
+ * @type {Object}
+ */
 const decoder = new cbor.Decoder({
   tags: {
     [TAGS.id]: val => new ID(val),
@@ -35,10 +39,31 @@ const decoder = new cbor.Decoder({
   }
 })
 
+class ID {
+  /**
+   * an ID
+   * @param {Buffer} id - the id as an buffer
+   */
+  constructor (id) {
+    this.id = id
+  }
+
+  encodeCBOR (gen) {
+    return gen.write(new cbor.Tagged(TAGS.id, this.id))
+  }
+}
+
 class FunctionRef {
+  /**
+   * A function reference
+   * @param {Object} opts
+   * @param {*} opts.identifier - the function's identifier
+   * @param {ID} opts.actorID - the id of the actor
+   * @param {Array} opts.params - the params of the function
+   */
   constructor (opts) {
     this.identifier = opts.identifier
-    this.destId = opts.id
+    this.actorID = opts.actorID
     this.params = opts.params
     this.gas = opts.gas || 0
   }
@@ -47,18 +72,28 @@ class FunctionRef {
     return gen.write(new cbor.Tagged(TAGS.func, [
       this.identifier,
       this.params,
-      this.destId,
+      this.actorID,
       this.gas
     ]))
   }
 }
 
 class ModuleRef {
-  constructor (ex, id) {
-    this.exports = ex
+  /**
+   * A module reference
+   * @param {Object} exports - a map of exported function to params for the funcion if any
+   * @param {ID} id - the id of the actor
+   */
+  constructor (exports, id) {
+    this.exports = exports
     this.id = id
   }
 
+  /**
+   * return a function refernce given the name of the function
+   * @param {string} name
+   * @returns {FunctionRef}
+   */
   getFuncRef (name) {
     const params = this.exports[name]
 
@@ -74,22 +109,9 @@ class ModuleRef {
   }
 }
 
-class ID {
-  constructor (id) {
-    this.id = id
-  }
-
-  encodeCBOR (gen) {
-    return gen.write(new cbor.Tagged(TAGS.id, this.id))
-  }
-}
-
-/**
- * This implements Messages for Primea
- * @module primea-message
- */
 class Message extends EventEmitter {
   /**
+   * This implements Messages for Primea
    * @param {Object} opts
    * @param {ArrayBuffer} opts.data - the payload of the message
    * @param {Array<Object>} opts.caps - an array of capabilities to send in the message

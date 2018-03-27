@@ -1,19 +1,31 @@
 # SYNOPSIS 
-[![NPM Package](https://img.shields.io/npm/v/<modeule-name>.svg?style=flat-square)](https://www.npmjs.org/package/<module-name>)
-[![Build Status](https://img.shields.io/travis/<gh-user>/<repo>.svg?branch=master&style=flat-square)](https://travis-ci.org/<gh-user>/<repo>)
-[![Coverage Status](https://img.shields.io/coveralls/<gh-user>/<repo>.svg?style=flat-square)](https://coveralls.io/r/<gh-user>/<repo>)
+[![NPM Package](https://img.shields.io/npm/v/primea-objects.svg?style=flat-square)](https://www.npmjs.org/package/primea-objects)
+[![Build Status](https://img.shields.io/travis/primea/primea-objects.svg?branch=master&style=flat-square)](https://travis-ci.org/primea/primea-objects)
+[![Coverage Status](https://img.shields.io/coveralls/primea/primea-objects.svg?style=flat-square)](https://coveralls.io/r/primea/primea-objects)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
 
-This isdi easdfkl; asdfj kal;sdjfkl ajsdklfj akls;j wat?
+Object helper classes for Primea's system Objects
 
 # INSTALL
-`npm install <name>`
+`npm install primea-objects`
 
 # USAGE
 
 ```javascript
- javascript = new Javascript()
+const objects = require('primea-objects')
+
+const id = new objects.ID(Buffer.from([0x1]))
+const modRef = new objects.ModuleRef({'name': ['i32']}, id)
+const funcRef = rmodRef.getFuncRef('name')
+
+// all objects can be encoded to cbor with borc
+const cbor = require('borc')
+const encodedModRef = cbor.encode(modRef)
+
+// and decoded with the decoder
+objects.decoder.decodeFirst(encodedModRef)
+
 ```
 
 # API
