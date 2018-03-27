@@ -27,7 +27,7 @@ const decoder = new cbor.Decoder({
     [TAGS.func]: val => new FunctionRef({
       identifier: val[0],
       params: val[1],
-      id: val[2],
+      actorID: val[2],
       gas: val[3]
     }),
     [TAGS.mod]: val => new ModuleRef(...val),
@@ -48,6 +48,10 @@ class ID {
    */
   constructor (id) {
     this.id = id
+  }
+
+  toString () {
+    return this.id.toString('hex')
   }
 
   encodeCBOR (gen) {
@@ -106,7 +110,7 @@ class ModuleRef {
     return new FunctionRef({
       identifier: [false, name],
       params,
-      id: this.id
+      actorID: this.id
     })
   }
 

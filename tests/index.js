@@ -14,7 +14,7 @@ tape('system objects', t => {
   const id = new objects.ID(Buffer.from([0x1]))
   const enid = cbor.encode(id)
   const rid = objects.decoder.decodeFirst(enid)
-  t.equals(rid.id.toString('hex'), '01')
+  t.equals(rid.toString(), '01')
 
   const modRef = new objects.ModuleRef({'name': ['i32']}, id)
   const enmod = cbor.encode(modRef)
