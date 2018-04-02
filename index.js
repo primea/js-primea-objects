@@ -79,7 +79,7 @@ class FunctionRef {
 
   /**
    * Creates a copy of the funcRef
-   * @retrun {FunctionRef}
+   * @returns {FunctionRef}
    */
   copy () {
     return new FunctionRef({
