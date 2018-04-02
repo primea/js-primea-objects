@@ -4,7 +4,6 @@ const cbor = require('borc')
 const objects = require('../')
 
 tape('system objects', t => {
-
   t.equals(objects.getType(), 'invalid')
   t.equals(objects.getType(true), 'invalid')
   const msg = new objects.Message({
