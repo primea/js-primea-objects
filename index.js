@@ -84,6 +84,15 @@ class FunctionRef {
       this.gas
     ]))
   }
+
+  copy () {
+    return new FunctionRef({
+      identifier: this.identifier,
+      actorID: this.actorID,
+      params: this.params,
+      gas: this.gas
+    })
+  }
 }
 
 /**

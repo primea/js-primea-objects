@@ -22,6 +22,10 @@ tape('system objects', t => {
   t.deepEquals(modRef, rmodRef)
 
   const funcRef = rmodRef.getFuncRef('name')
+  funcRef.gas = 1000
+  const funcRef2 = funcRef.copy()
+  funcRef2.gas = 500
+  t.equals(funcRef.gas, 1000, 'should have correct gas amount')
   const enFuncRef = cbor.encode(funcRef)
   const rFuncRef = objects.decoder.decodeFirst(enFuncRef)
   t.deepEquals(funcRef, rFuncRef)
