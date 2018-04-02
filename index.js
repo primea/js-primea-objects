@@ -1,20 +1,12 @@
 const cbor = require('borc')
 const EventEmitter = require('events')
+const Buffer = require('safe-buffer').Buffer
 
 const TAGS = {
   id: 41,
   link: 42,
   func: 43,
   mod: 44
-}
-
-const DEFAULTS = {
-  elem: [],
-  data: Buffer.from([]),
-  id: new cbor.Tagged(TAGS.id, 0),
-  mod: new cbor.Tagged(TAGS.mod, [{}, new cbor.Tagged(TAGS.id, 0)]),
-  link: new cbor.Tagged(TAGS.link, null),
-  func: new cbor.Tagged(TAGS.func, 0)
 }
 
 /**
@@ -85,6 +77,10 @@ class FunctionRef {
     ]))
   }
 
+  /**
+   * Creates a copy of the funcRef
+   * @retrun {FunctionRef}
+   */
   copy () {
     return new FunctionRef({
       identifier: this.identifier,
@@ -165,11 +161,37 @@ class Message extends EventEmitter {
   }
 }
 
+/**
+ * returns the type that the object is
+ * @param {*} obj
+ * @return {String}
+ */
+function getType (obj) {
+  if (obj) {
+    if (Buffer.isBuffer(obj)) {
+      return 'data'
+    } else if (Array.isArray(obj)) {
+      return 'elem'
+    } else if (obj['/']) {
+      return 'link'
+    } else if (obj.constructor === Message) {
+      return 'message'
+    } else if (obj.constructor === ID) {
+      return 'id'
+    } else if (obj.constructor === FunctionRef) {
+      return 'func'
+    } else if (obj.constructor === ModuleRef) {
+      return 'mod'
+    }
+  }
+  return 'invalid'
+}
+
 module.exports = {
   Message,
   ID,
   FunctionRef,
   ModuleRef,
-  DEFAULTS,
-  decoder
+  decoder,
+  getType
 }
