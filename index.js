@@ -189,7 +189,7 @@ function getType (obj) {
 }
 
 /**
- * returns the type that the object is
+ * returns the ID of an actor
  * @param {Object} id
  * @param {Number} id.nonce - the actor's nonce
  * @param {ID} id.parent - the actor's parent's ID
