@@ -22,8 +22,8 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "documentation": "^6.1.0",
-    "nyc": "^11.6.0",
+    "documentation": "^6.3.0",
+    "nyc": "^11.7.1",
     "standard": "^11.0.1",
     "tape": "^4.9.0"
   },
