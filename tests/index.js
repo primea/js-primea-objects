@@ -48,3 +48,19 @@ tape('system objects', t => {
 
   t.end()
 })
+
+tape('actor IDs', t => {
+  const id0 = { nonce: 0, parent: null }
+  const hashedId0 = objects.generateActorId(id0)
+  t.deepEquals(hashedId0.id, Buffer.from('372a08b828598122fc64c4aa94735c770f25bbbc', 'hex'))
+
+  const id00 = { nonce: 0, parent: hashedId0 }
+  const hashedId00 = objects.generateActorId(id00)
+  t.deepEquals(hashedId00.id, Buffer.from('10d7d4be8663c37d8ea7cff89b7c01c059ebbc80', 'hex'))
+
+  const id01 = { nonce: 1, parent: hashedId0 }
+  const hashedId01 = objects.generateActorId(id01)
+  t.deepEquals(hashedId01.id, Buffer.from('0ca311b75efd27e7daf6eec8b51b5c1fe33ff233', 'hex'))
+
+  t.end()
+})

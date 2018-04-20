@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const cbor = require('borc')
 const EventEmitter = require('events')
 const Buffer = require('safe-buffer').Buffer
@@ -187,11 +188,39 @@ function getType (obj) {
   return 'invalid'
 }
 
+/**
+ * returns the type that the object is
+ * @param {Object} id
+ * @param {Number} id.nonce - the actor's nonce
+ * @param {ID} id.parent - the actor's parent's ID
+ * @return {ID}
+ */
+function generateActorId (id) {
+  const encoded = _encodeActorId(id)
+  const hashed = _hash(encoded)
+  return new ID(hashed)
+}
+
+function _encodeActorId (id) {
+  if (id.parent) {
+    return cbor.encode([id.nonce, id.parent.id])
+  } else {
+    return cbor.encode([id.nonce, null])
+  }
+}
+
+function _hash (buf) {
+  const hash = crypto.createHash('sha256')
+  hash.update(buf)
+  return hash.digest().slice(0, 20)
+}
+
 module.exports = {
   Message,
   ID,
   FunctionRef,
   ModuleRef,
   decoder,
-  getType
+  getType,
+  generateActorId
 }
