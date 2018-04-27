@@ -2,6 +2,7 @@ const Buffer = require('safe-buffer').Buffer
 const tape = require('tape')
 const cbor = require('borc')
 const objects = require('../')
+const utils = require('../utils')
 
 tape('system objects', t => {
   t.equals(objects.getType(), 'invalid')
@@ -60,6 +61,43 @@ tape('actor IDs', t => {
 
   const id01 = { nonce: 1, parent: hashedId0 }
   const hashedId01 = objects.generateActorId(id01)
+  t.deepEquals(hashedId01.id, Buffer.from('0ca311b75efd27e7daf6eec8b51b5c1fe33ff233', 'hex'))
+
+  t.end()
+})
+
+tape('utils', t => {
+  const id = new objects.ID(Buffer.from([0x1]))
+  const obj = [
+    new objects.ModuleRef({'name': ['i32']}, id),
+    new objects.FunctionRef({
+      identifier: [false, 'main'],
+      actorID: id,
+      params: ['i32'],
+      gas: 100
+    }),
+    Buffer.from([1, 2, 3, 4])
+  ]
+  const jsonFull = utils.toJSON(obj)
+  t.deepEquals(JSON.stringify(jsonFull), '[{"@ModuleRef":{"id":"0x01","exports":{"name":["i32"]}}},{"@FunctionRef":{"actorID":"0x01","private":false,"name":"main","gas":100,"params":["i32"]}},"0x01020304"]')
+
+  const json = utils.toJSON(obj, false)
+  t.deepEquals(JSON.stringify(json), '[{"@ModuleRef":{"id":"0x01"}},{"@FunctionRef":{"actorID":"0x01","private":false,"name":"main","gas":100}},"0x01020304"]')
+
+  const newObj = [
+    new objects.ModuleRef(undefined, id),
+    new objects.FunctionRef({
+      identifier: [false, 'main'],
+      actorID: id,
+      gas: 100
+    }),
+    Buffer.from([1, 2, 3, 4])
+  ]
+  t.deepEquals(utils.fromJSON(json), newObj)
+
+  t.deepEquals(utils.fromJSON(jsonFull), obj)
+
+  const hashedId01 = utils.actorRefToId([0, 1])
   t.deepEquals(hashedId01.id, Buffer.from('0ca311b75efd27e7daf6eec8b51b5c1fe33ff233', 'hex'))
 
   t.end()

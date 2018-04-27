@@ -47,6 +47,15 @@ class ID {
     return this.id.toString('hex')
   }
 
+  toJSON () {
+    return `0x${this.toString()}`
+  }
+
+  static fromJSON (arg) {
+    const { fromHex } = require('./utils')
+    return new ID(fromHex(arg))
+  }
+
   encodeCBOR (gen) {
     return gen.write(new cbor.Tagged(TAGS.id, this.id))
   }
@@ -76,6 +85,31 @@ class FunctionRef {
       this.actorID,
       this.gas
     ]))
+  }
+
+  toJSON (includeParams = true) {
+    const json = {
+      '@FunctionRef': {
+        actorID: this.actorID.toJSON(),
+        private: this.identifier[0],
+        name: this.identifier[1],
+        gas: this.gas
+      }
+    }
+    if (includeParams) {
+      json['@FunctionRef'].params = this.params
+    }
+    return json
+  }
+
+  static fromJSON (arg) {
+    const data = arg['@FunctionRef']
+    return new FunctionRef({
+      identifier: [data.private, data.name],
+      actorID: ID.fromJSON(data.actorID),
+      params: data.params,
+      gas: data.gas
+    })
   }
 
   /**
@@ -118,6 +152,23 @@ class ModuleRef {
       params,
       actorID: this.id
     })
+  }
+
+  toJSON (includeExports = true) {
+    const json = {
+      '@ModuleRef': {
+        id: this.id.toJSON()
+      }
+    }
+    if (includeExports) {
+      json['@ModuleRef'].exports = this.exports
+    }
+    return json
+  }
+
+  static fromJSON (arg) {
+    const data = arg['@ModuleRef']
+    return new ModuleRef(data.exports, ID.fromJSON(data.id))
   }
 
   encodeCBOR (gen) {
