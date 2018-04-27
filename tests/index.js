@@ -78,11 +78,11 @@ tape('utils', t => {
     }),
     Buffer.from([1, 2, 3, 4])
   ]
-  const json = utils.toJSON(obj)
-  t.deepEquals(JSON.stringify(json), '[{"@ModuleRef":{"id":"0x01"}},{"@FunctionRef":{"actorID":"0x01","private":false,"name":"main","gas":100}},"0x01020304"]')
-
-  const jsonFull = utils.toJSON(obj, true)
+  const jsonFull = utils.toJSON(obj)
   t.deepEquals(JSON.stringify(jsonFull), '[{"@ModuleRef":{"id":"0x01","exports":{"name":["i32"]}}},{"@FunctionRef":{"actorID":"0x01","private":false,"name":"main","gas":100,"params":["i32"]}},"0x01020304"]')
+
+  const json = utils.toJSON(obj, false)
+  t.deepEquals(JSON.stringify(json), '[{"@ModuleRef":{"id":"0x01"}},{"@FunctionRef":{"actorID":"0x01","private":false,"name":"main","gas":100}},"0x01020304"]')
 
   const newObj = [
     new objects.ModuleRef(undefined, id),
