@@ -87,7 +87,7 @@ class FunctionRef {
     ]))
   }
 
-  toJSON (includeParams = false) {
+  toJSON (includeParams = true) {
     const json = {
       '@FunctionRef': {
         actorID: this.actorID.toJSON(),
@@ -154,7 +154,7 @@ class ModuleRef {
     })
   }
 
-  toJSON (includeExports = false) {
+  toJSON (includeExports = true) {
     const json = {
       '@ModuleRef': {
         id: this.id.toJSON()
