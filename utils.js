@@ -1,6 +1,12 @@
-const { FunctionRef, ModuleRef, generateActorId, getType } = require('./')
+const { FunctionRef, ActorRef, ModuleRef, generateId, getType } = require('./')
 
-const actorRefToId = ref => ref.reduce((parent, curr) => generateActorId({ parent, nonce: curr }), null)
+/**
+ * returns the ID of an actor, given the path
+ * @param {Array} path - indexes of each actor relative to parent
+ * @example [0, 1, 0] - the first child of the second child of the root actor
+ * @return {ID}
+ */
+const actorPathToId = path => path.reduce((parent, curr) => generateId({ parent, nonce: curr }), null)
 
 const toHex = arg => Buffer.isBuffer(arg) ? `0x${arg.toString('hex')}` : arg
 
@@ -13,6 +19,7 @@ const toJSON = (arg, includeOptional = true) => {
     case 'id':
     case 'func':
     case 'mod':
+    case 'actor':
       return arg.toJSON(includeOptional)
     case 'link':
       return {
@@ -32,10 +39,13 @@ const fromJSON = arg => {
       return arg.map(fromJSON)
     }
 
-    if (arg['@FunctionRef']) {
-      return FunctionRef.fromJSON(arg)
-    } else if (arg['@ModuleRef']) {
-      return ModuleRef.fromJSON(arg)
+    switch (arg.type) {
+      case 'func':
+        return FunctionRef.fromJSON(arg)
+      case 'actor':
+        return ActorRef.fromJSON(arg)
+      case 'mod':
+        return ModuleRef.fromJSON(arg)
     }
   }
 
@@ -43,9 +53,7 @@ const fromJSON = arg => {
 }
 
 module.exports = {
-  actorRefToId,
+  actorPathToId,
   toJSON,
-  fromJSON,
-  toHex,
-  fromHex
+  fromJSON
 }
