@@ -5,22 +5,24 @@
 -   [ID][1]
 -   [FunctionRef][2]
     -   [copy][3]
--   [ModuleRef][4]
+-   [ActorRef][4]
     -   [getFuncRef][5]
--   [Message][6]
--   [getType][7]
+-   [ModuleRef][6]
+-   [Message][7]
+-   [getType][8]
+-   [generateId][9]
 
 ## 
 
-[index.js:5-10][8]
+[index.js:6-12][10]
 
 a cbor decoder for the objects
 
-Type: [Object][9]
+Type: [Object][11]
 
 ## ID
 
-[index.js:37-52][10]
+[index.js:43-66][12]
 
 an ID
 
@@ -30,48 +32,62 @@ an ID
 
 ## FunctionRef
 
-[index.js:57-92][11]
+[index.js:71-132][13]
 
 A function reference
 
 **Parameters**
 
--   `opts` **[Object][9]** 
+-   `opts` **[Object][11]** 
 
 ### copy
 
-[index.js:84-91][12]
+[index.js:124-131][14]
 
 Creates a copy of the funcRef
 
-Returns **[FunctionRef][13]** 
+Returns **[FunctionRef][15]** 
+
+## ActorRef
+
+[index.js:137-177][16]
+
+An actor reference
+
+**Parameters**
+
+-   `id` **[ID][17]** the id of the actor
+-   `modRef` **[ModuleRef][18]** the modRef of the actor
+
+### getFuncRef
+
+[index.js:152-160][19]
+
+return a function reference given the name of the function
+
+**Parameters**
+
+-   `name` **[string][20]** 
+
+Returns **[FunctionRef][15]** 
 
 ## ModuleRef
 
-[index.js:97-125][14]
+[index.js:182-219][21]
 
 A module reference
 
 **Parameters**
 
--   `exports` **[Object][9]** a map of exported function to params for the funcion if any
--   `id` **[ID][15]** the id of the actor
-
-### getFuncRef
-
-[index.js:112-120][16]
-
-return a function refernce given the name of the function
-
-**Parameters**
-
--   `name` **[string][17]** 
-
-Returns **[FunctionRef][13]** 
+-   `id` **[ID][17]** the id of the module
+-   `type` **[Number][22]** type id of the module
+-   `exports` **[Object][11]** a map of exported function to params for the function, if any
+-   `state` **[Object][11]** state of the module
+-   `code` **[Buffer][23]** code of the module
 
 ## Message
 
-[index.js:130-162][18]
+[index.js:224-256][24]
 
 **Extends EventEmitter**
 
@@ -79,11 +95,11 @@ This implements Messages for Primea
 
 **Parameters**
 
--   `opts` **[Object][9]** 
+-   `opts` **[Object][11]** 
 
 ## getType
 
-[index.js:169-188][19]
+[index.js:263-284][25]
 
 returns the type that the object is
 
@@ -91,7 +107,21 @@ returns the type that the object is
 
 -   `obj` **any** 
 
-Returns **[String][17]** 
+Returns **[String][20]** 
+
+## generateId
+
+[index.js:293-297][26]
+
+returns the ID of an actor
+
+**Parameters**
+
+-   `id` **[Object][11]** 
+    -   `id.nonce` **[Number][22]** the actor's nonce
+    -   `id.parent` **[ID][17]** the actor's parent's ID
+
+Returns **[ID][17]** 
 
 [1]: #id
 
@@ -99,34 +129,48 @@ Returns **[String][17]**
 
 [3]: #copy
 
-[4]: #moduleref
+[4]: #actorref
 
 [5]: #getfuncref
 
-[6]: #message
+[6]: #moduleref
 
-[7]: #gettype
+[7]: #message
 
-[8]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L5-L10 "Source code on GitHub"
+[8]: #gettype
 
-[9]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[9]: #generateid
 
-[10]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L37-L52 "Source code on GitHub"
+[10]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L6-L12 "Source code on GitHub"
 
-[11]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L57-L92 "Source code on GitHub"
+[11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[12]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L84-L91 "Source code on GitHub"
+[12]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L43-L66 "Source code on GitHub"
 
-[13]: #functionref
+[13]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L71-L132 "Source code on GitHub"
 
-[14]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L97-L125 "Source code on GitHub"
+[14]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L124-L131 "Source code on GitHub"
 
-[15]: #id
+[15]: #functionref
 
-[16]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L112-L120 "Source code on GitHub"
+[16]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L137-L177 "Source code on GitHub"
 
-[17]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[17]: #id
 
-[18]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L130-L162 "Source code on GitHub"
+[18]: #moduleref
 
-[19]: https://github.com/primea/js-primea-objects/blob/19ce496560f9ea1fb3b35eefab4afbe9b8d581eb/index.js#L169-L188 "Source code on GitHub"
+[19]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L152-L160 "Source code on GitHub"
+
+[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[21]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L182-L219 "Source code on GitHub"
+
+[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[23]: https://nodejs.org/api/buffer.html
+
+[24]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L224-L256 "Source code on GitHub"
+
+[25]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L263-L284 "Source code on GitHub"
+
+[26]: https://github.com/primea/js-primea-objects/blob/7051614add94c2f622a5910779dce843f8591e8a/index.js#L293-L297 "Source code on GitHub"

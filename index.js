@@ -201,7 +201,7 @@ class ModuleRef {
       id: this.id.toJSON(),
       modType: this.type,
       code: `0x${this.code['/'].toString('hex')}`,
-      state: this.state,
+      state: this.state
     }
     if (includeParams) {
       json.exports = this.exports
