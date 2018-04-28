@@ -7,7 +7,8 @@ const TAGS = {
   id: 41,
   link: 42,
   func: 43,
-  mod: 44
+  mod: 44,
+  actor: 45
 }
 
 /**
@@ -23,7 +24,11 @@ const decoder = new cbor.Decoder({
       actorID: val[2],
       gas: val[3]
     }),
-    [TAGS.mod]: val => new ModuleRef(...val),
+    [TAGS.mod]: val => {
+      const code = val.pop()['/']
+      return new ModuleRef(...val, code)
+    },
+    [TAGS.actor]: val => new ActorRef(...val),
     [TAGS.link]: val => {
       return {
         '/': val
@@ -52,8 +57,7 @@ class ID {
   }
 
   static fromJSON (arg) {
-    const { fromHex } = require('./utils')
-    return new ID(fromHex(arg))
+    return Buffer.from(arg.slice(2))
   }
 
   encodeCBOR (gen) {
@@ -89,21 +93,19 @@ class FunctionRef {
 
   toJSON (includeParams = true) {
     const json = {
-      '@FunctionRef': {
-        actorID: this.actorID.toJSON(),
-        private: this.identifier[0],
-        name: this.identifier[1],
-        gas: this.gas
-      }
+      type: 'func',
+      actorID: this.actorID.toJSON(),
+      private: this.identifier[0],
+      name: this.identifier[1],
+      gas: this.gas
     }
     if (includeParams) {
-      json['@FunctionRef'].params = this.params
+      json.params = this.params
     }
     return json
   }
 
-  static fromJSON (arg) {
-    const data = arg['@FunctionRef']
+  static fromJSON (data) {
     return new FunctionRef({
       identifier: [data.private, data.name],
       actorID: ID.fromJSON(data.actorID),
@@ -129,13 +131,13 @@ class FunctionRef {
 /**
  * A module reference
  */
-class ModuleRef {
+class ActorRef {
   /**
-   * @param {Object} exports - a map of exported function to params for the funcion if any
    * @param {ID} id - the id of the actor
+   * @param {Object} exports - a map of exported function to params for the funcion if any
    */
-  constructor (exports, id) {
-    this.exports = exports
+  constructor (id, modRef) {
+    this.modRef = modRef
     this.id = id
   }
 
@@ -145,7 +147,7 @@ class ModuleRef {
    * @returns {FunctionRef}
    */
   getFuncRef (name) {
-    const params = this.exports[name]
+    const params = this.modRef.exports[name]
 
     return new FunctionRef({
       identifier: [false, name],
@@ -156,23 +158,50 @@ class ModuleRef {
 
   toJSON (includeExports = true) {
     const json = {
-      '@ModuleRef': {
-        id: this.id.toJSON()
-      }
+      type: 'actor',
+      id: this.id.toJSON()
     }
     if (includeExports) {
-      json['@ModuleRef'].exports = this.exports
+      json.exports = this.exports
     }
     return json
   }
 
-  static fromJSON (arg) {
-    const data = arg['@ModuleRef']
-    return new ModuleRef(data.exports, ID.fromJSON(data.id))
+  static fromJSON (data) {
+    return new ActorRef(data.exports, ID.fromJSON(data.id))
   }
 
   encodeCBOR (gen) {
-    return gen.write(new cbor.Tagged(TAGS.mod, [this.exports, this.id]))
+    return gen.write(new cbor.Tagged(TAGS.actor, [this.id, this.modRef]))
+  }
+}
+
+class ModuleRef {
+  constructor (modID, type, exports, state, code) {
+    this.id = modID
+    this.type = type
+    this.exports = exports
+    this.state = state
+    this.code = {'/': code}
+  }
+
+  toJSON () {
+    return {
+      type: 'mod',
+      id: this.id,
+      modType: this.type,
+      code: this.code,
+      state: this.state,
+      exports: this.exports
+    }
+  }
+
+  static formJSON () {
+
+  }
+
+  encodeCBOR (gen) {
+    return gen.write(new cbor.Tagged(TAGS.mod, [this.id, this.type, this.exports, this.state, this.code]))
   }
 }
 
@@ -234,6 +263,8 @@ function getType (obj) {
       return 'func'
     } else if (obj.constructor === ModuleRef) {
       return 'mod'
+    } else if (obj.constructor === ActorRef) {
+      return 'actor'
     }
   }
   return 'invalid'
@@ -246,7 +277,7 @@ function getType (obj) {
  * @param {ID} id.parent - the actor's parent's ID
  * @return {ID}
  */
-function generateActorId (id) {
+function generateId (id) {
   const encoded = _encodeActorId(id)
   const hashed = _hash(encoded)
   return new ID(hashed)
@@ -271,7 +302,8 @@ module.exports = {
   ID,
   FunctionRef,
   ModuleRef,
+  ActorRef,
   decoder,
   getType,
-  generateActorId
+  generateId
 }

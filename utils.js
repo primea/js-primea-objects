@@ -1,9 +1,7 @@
 const { FunctionRef, ModuleRef, generateActorId, getType } = require('./')
 
 const actorRefToId = ref => ref.reduce((parent, curr) => generateActorId({ parent, nonce: curr }), null)
-
 const toHex = arg => Buffer.isBuffer(arg) ? `0x${arg.toString('hex')}` : arg
-
 const fromHex = arg => typeof arg !== 'string' ? arg : Buffer.from(arg.slice(0, 2) === '0x' ? arg.slice(2) : arg, 'hex')
 
 const toJSON = (arg, includeOptional = true) => {
@@ -13,6 +11,7 @@ const toJSON = (arg, includeOptional = true) => {
     case 'id':
     case 'func':
     case 'mod':
+    case 'actor':
       return arg.toJSON(includeOptional)
     case 'link':
       return {
@@ -45,7 +44,5 @@ const fromJSON = arg => {
 module.exports = {
   actorRefToId,
   toJSON,
-  fromJSON,
-  toHex,
-  fromHex
+  fromJSON
 }
