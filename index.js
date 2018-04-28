@@ -42,7 +42,7 @@ const decoder = new cbor.Decoder({
  */
 class ID {
   /*
-   * @param {Buffer} id - the id as an buffer
+   * @param {Buffer} id - the id as a buffer
    */
   constructor (id) {
     this.id = id
@@ -56,8 +56,8 @@ class ID {
     return `0x${this.toString()}`
   }
 
-  static fromJSON (arg) {
-    return Buffer.from(arg.slice(2))
+  static fromJSON (data) {
+    return new ID(Buffer.from(data.slice(2), 'hex'))
   }
 
   encodeCBOR (gen) {
@@ -71,9 +71,12 @@ class ID {
 class FunctionRef {
   /**
    * @param {Object} opts
-   * @param {*} opts.identifier - the function's identifier
+   * @param {Array} opts.identifier - the function's identifier
+   * @param {Boolean} opts.identifier[0] - true if private function
+   * @param {String} opts.identifier[1] - name of exported function, or table index if private
    * @param {ID} opts.actorID - the id of the actor
    * @param {Array} opts.params - the params of the function
+   * @param {Number} opts.gas - gas amount
    */
   constructor (opts) {
     this.identifier = opts.identifier
@@ -93,7 +96,7 @@ class FunctionRef {
 
   toJSON (includeParams = true) {
     const json = {
-      type: 'func',
+      type: getType(this),
       actorID: this.actorID.toJSON(),
       private: this.identifier[0],
       name: this.identifier[1],
@@ -129,12 +132,12 @@ class FunctionRef {
 }
 
 /**
- * A module reference
+ * An actor reference
  */
 class ActorRef {
   /**
    * @param {ID} id - the id of the actor
-   * @param {Object} exports - a map of exported function to params for the funcion if any
+   * @param {ModuleRef} modRef - the modRef of the actor
    */
   constructor (id, modRef) {
     this.modRef = modRef
@@ -142,7 +145,7 @@ class ActorRef {
   }
 
   /**
-   * return a function refernce given the name of the function
+   * return a function reference given the name of the function
    * @param {string} name
    * @returns {FunctionRef}
    */
@@ -157,18 +160,15 @@ class ActorRef {
   }
 
   toJSON (includeExports = true) {
-    const json = {
-      type: 'actor',
-      id: this.id.toJSON()
+    return {
+      type: getType(this),
+      id: this.id.toJSON(),
+      mod: this.modRef.toJSON(includeExports)
     }
-    if (includeExports) {
-      json.exports = this.exports
-    }
-    return json
   }
 
   static fromJSON (data) {
-    return new ActorRef(data.exports, ID.fromJSON(data.id))
+    return new ActorRef(ID.fromJSON(data.id), ModuleRef.fromJSON(data.mod))
   }
 
   encodeCBOR (gen) {
@@ -176,28 +176,41 @@ class ActorRef {
   }
 }
 
+/**
+ * A module reference
+ */
 class ModuleRef {
-  constructor (modID, type, exports, state, code) {
-    this.id = modID
+  /**
+   * @param {ID} id - the id of the module
+   * @param {Number} type - type id of the module
+   * @param {Object} exports - a map of exported function to params for the function, if any
+   * @param {Object} state - state of the module
+   * @param {Buffer} code - code of the module
+   */
+  constructor (id, type, exports, state, code) {
+    this.id = id
     this.type = type
     this.exports = exports
     this.state = state
     this.code = {'/': code}
   }
 
-  toJSON () {
-    return {
-      type: 'mod',
-      id: this.id,
+  toJSON (includeParams = true) {
+    const json = {
+      type: getType(this),
+      id: this.id.toJSON(),
       modType: this.type,
-      code: this.code,
+      code: `0x${this.code['/'].toString('hex')}`,
       state: this.state,
-      exports: this.exports
     }
+    if (includeParams) {
+      json.exports = this.exports
+    }
+    return json
   }
 
-  static formJSON () {
-
+  static fromJSON (data) {
+    return new ModuleRef(ID.fromJSON(data.id), data.modType, data.exports, data.state, Buffer.from(data.code.slice(2), 'hex'))
   }
 
   encodeCBOR (gen) {
