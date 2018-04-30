@@ -24,14 +24,14 @@ tape('system objects', t => {
   t.equals(objects.getType(id), 'id')
 
   // mod ref
-  const modRef = new objects.ModuleRef(id, 1, {'name': ['i32']}, [], 'test')
+  const modRef = new objects.ModuleRef(id, 1, {'name': ['i32']}, 'test')
   const enmod = cbor.encode(modRef)
   const rmodRef = objects.decoder.decodeFirst(enmod)
   t.equals(objects.getType(modRef), 'mod')
   t.deepEquals(modRef, rmodRef)
 
   // actor ref
-  const actorRef = new objects.ActorRef(id, modRef)
+  const actorRef = new objects.ActorRef(id, modRef, [])
   const enactor = cbor.encode(actorRef)
   const ractorRef = objects.decoder.decodeFirst(enactor)
   t.equals(objects.getType(actorRef), 'actor')
@@ -78,10 +78,10 @@ tape('actor IDs', t => {
 tape('utils', t => {
   const id = new objects.ID(Buffer.from([0x1]))
   const id2 = new objects.ID(Buffer.from([0x2]))
-  const modRef = new objects.ModuleRef(id, 1, {'name': ['i32']}, [], Buffer.from('code'))
+  const modRef = new objects.ModuleRef(id, 1, {'name': ['i32']}, Buffer.from('code'))
   const obj = [
     modRef,
-    new objects.ActorRef(id2, modRef),
+    new objects.ActorRef(id2, modRef, []),
     new objects.FunctionRef({
       identifier: [false, 'main'],
       actorID: id2,
@@ -91,15 +91,15 @@ tape('utils', t => {
     Buffer.from([1, 2, 3, 4])
   ]
   const json = utils.toJSON(obj)
-  t.deepEquals(JSON.stringify(json), '[{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[],"exports":{"name":["i32"]}},{"type":"actor","id":"0x02","mod":{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[],"exports":{"name":["i32"]}}},{"type":"func","actorID":"0x02","private":false,"name":"main","gas":100,"params":["i32"]},"0x01020304"]')
+  t.deepEquals(JSON.stringify(json), '[{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","exports":{"name":["i32"]}},{"type":"actor","id":"0x02","mod":{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","exports":{"name":["i32"]}},"state":[]},{"type":"func","actorID":"0x02","private":false,"name":"main","gas":100,"params":["i32"]},"0x01020304"]')
 
   const jsonPartial = utils.toJSON(obj, false)
-  t.deepEquals(JSON.stringify(jsonPartial), '[{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[]},{"type":"actor","id":"0x02","mod":{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[]}},{"type":"func","actorID":"0x02","private":false,"name":"main","gas":100},"0x01020304"]')
+  t.deepEquals(JSON.stringify(jsonPartial), '[{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465"},{"type":"actor","id":"0x02","mod":{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465"},"state":[]},{"type":"func","actorID":"0x02","private":false,"name":"main","gas":100},"0x01020304"]')
 
-  const modRefPartial = new objects.ModuleRef(id, 1, undefined, [], Buffer.from('code'))
+  const modRefPartial = new objects.ModuleRef(id, 1, undefined, Buffer.from('code'))
   const objPartial = [
     modRefPartial,
-    new objects.ActorRef(id2, modRefPartial),
+    new objects.ActorRef(id2, modRefPartial, []),
     new objects.FunctionRef({
       identifier: [false, 'main'],
       actorID: id2,
