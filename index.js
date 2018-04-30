@@ -96,7 +96,7 @@ class FunctionRef {
 
   toJSON (includeParams = true) {
     const json = {
-      type: getType(this),
+      type: 'func',
       actorID: this.actorID.toJSON(),
       private: this.identifier[0],
       name: this.identifier[1],
@@ -161,7 +161,7 @@ class ActorRef {
 
   toJSON (includeExports = true) {
     return {
-      type: getType(this),
+      type: 'actor',
       id: this.id.toJSON(),
       mod: this.modRef.toJSON(includeExports)
     }
@@ -197,7 +197,7 @@ class ModuleRef {
 
   toJSON (includeParams = true) {
     const json = {
-      type: getType(this),
+      type: 'mod',
       id: this.id.toJSON(),
       modType: this.type,
       code: `0x${this.code['/'].toString('hex')}`,
@@ -268,15 +268,15 @@ function getType (obj) {
       return 'elem'
     } else if (obj['/']) {
       return 'link'
-    } else if (obj.constructor === Message) {
+    } else if (obj.constructor.name === 'Message') {
       return 'message'
-    } else if (obj.constructor === ID) {
+    } else if (obj.constructor.name === 'ID') {
       return 'id'
-    } else if (obj.constructor === FunctionRef) {
+    } else if (obj.constructor.name === 'FunctionRef') {
       return 'func'
-    } else if (obj.constructor === ModuleRef) {
+    } else if (obj.constructor.name === 'ModuleRef') {
       return 'mod'
-    } else if (obj.constructor === ActorRef) {
+    } else if (obj.constructor.name === 'ActorRef') {
       return 'actor'
     }
   }
