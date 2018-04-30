@@ -1,6 +1,6 @@
 {
   "name": "primea-objects",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Object helper classes for Primea's system Objects",
   "main": "index.js",
   "scripts": {
