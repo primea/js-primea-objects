@@ -138,10 +138,12 @@ class ActorRef {
   /**
    * @param {ID} id - the id of the actor
    * @param {ModuleRef} modRef - the modRef of the actor
+   * @param {Object} state - state of the module
    */
-  constructor (id, modRef) {
-    this.modRef = modRef
+  constructor (id, modRef, state) {
     this.id = id
+    this.modRef = modRef
+    this.state = state
   }
 
   /**
@@ -163,16 +165,17 @@ class ActorRef {
     return {
       type: 'actor',
       id: this.id.toJSON(),
-      mod: this.modRef.toJSON(includeExports)
+      mod: this.modRef.toJSON(includeExports),
+      state: this.state
     }
   }
 
   static fromJSON (data) {
-    return new ActorRef(ID.fromJSON(data.id), ModuleRef.fromJSON(data.mod))
+    return new ActorRef(ID.fromJSON(data.id), ModuleRef.fromJSON(data.mod), data.state)
   }
 
   encodeCBOR (gen) {
-    return gen.write(new cbor.Tagged(TAGS.actor, [this.id, this.modRef]))
+    return gen.write(new cbor.Tagged(TAGS.actor, [this.id, this.modRef, this.state]))
   }
 }
 
@@ -184,14 +187,12 @@ class ModuleRef {
    * @param {ID} id - the id of the module
    * @param {Number} type - type id of the module
    * @param {Object} exports - a map of exported function to params for the function, if any
-   * @param {Object} state - state of the module
    * @param {Buffer} code - code of the module
    */
-  constructor (id, type, exports, state, code) {
+  constructor (id, type, exports, code) {
     this.id = id
     this.type = type
     this.exports = exports
-    this.state = state
     this.code = {'/': code}
   }
 
@@ -200,8 +201,7 @@ class ModuleRef {
       type: 'mod',
       id: this.id.toJSON(),
       modType: this.type,
-      code: `0x${this.code['/'].toString('hex')}`,
-      state: this.state
+      code: `0x${this.code['/'].toString('hex')}`
     }
     if (includeParams) {
       json.exports = this.exports
@@ -210,11 +210,11 @@ class ModuleRef {
   }
 
   static fromJSON (data) {
-    return new ModuleRef(ID.fromJSON(data.id), data.modType, data.exports, data.state, Buffer.from(data.code.slice(2), 'hex'))
+    return new ModuleRef(ID.fromJSON(data.id), data.modType, data.exports, Buffer.from(data.code.slice(2), 'hex'))
   }
 
   encodeCBOR (gen) {
-    return gen.write(new cbor.Tagged(TAGS.mod, [this.id, this.type, this.exports, this.state, this.code]))
+    return gen.write(new cbor.Tagged(TAGS.mod, [this.id, this.type, this.exports, this.code]))
   }
 }
 
