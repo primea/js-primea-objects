@@ -47,6 +47,8 @@ tape('system objects', t => {
   t.deepEquals(funcRef, rFuncRef)
   t.equals(objects.getType(rFuncRef), 'func')
 
+  t.throws(() => ractorRef.getFuncRef('invalid'), Error, 'should throw on invalid functions')
+
   const link = new cbor.Tagged(42, 'data')
   const enLink = cbor.encode(link)
   const rLink = objects.decoder.decodeFirst(enLink)

@@ -151,6 +151,9 @@ class ActorRef {
    */
   getFuncRef (name) {
     const params = this.modRef.exports[name]
+    if (!params) {
+      throw new Error(`function "${name}" not found`)
+    }
 
     return new FunctionRef({
       identifier: [false, name],
