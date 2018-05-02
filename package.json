@@ -16,7 +16,7 @@
   "author": "mjbecze <mjbecze@gmail.com>",
   "license": "MPL-2.0",
   "dependencies": {
-    "borc": "git+https://github.com/dignifiedquire/borc.git#fix/nested-array",
+    "borc": "^2.0.3",
     "events": "^2.0.0",
     "safe-buffer": "^5.1.2"
   },
