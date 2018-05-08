@@ -98,8 +98,8 @@ class FunctionRef {
     const json = {
       type: 'func',
       actorID: this.actorID.toJSON(),
-      private: this.identifier[0],
-      name: this.identifier[1],
+      private: this.identifier ? this.identifier[0] : null,
+      name: this.identifier ? this.identifier[1] : null,
       gas: this.gas
     }
     if (includeParams) {
