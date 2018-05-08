@@ -203,7 +203,7 @@ class ModuleRef {
       type: 'mod',
       id: this.id.toJSON(),
       modType: this.type,
-      code: `0x${this.code['/'].toString('hex')}`,
+      code: this.code['/'] ? `0x${this.code['/'].toString('hex')}` : null,
       state: this.state
     }
     if (includeParams) {
