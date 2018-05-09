@@ -96,7 +96,7 @@ class FunctionRef {
 
   toJSON (includeParams = true) {
     const json = {
-      type: 'func',
+      type: 'funcref',
       actorID: this.actorID.toJSON(),
       private: this.identifier ? this.identifier[0] : null,
       name: this.identifier ? this.identifier[1] : null,
@@ -164,14 +164,14 @@ class ActorRef {
 
   toJSON (includeExports = true) {
     return {
-      type: 'actor',
+      type: 'actorref',
       id: this.id.toJSON(),
-      mod: this.modRef.toJSON(includeExports)
+      modref: this.modRef.toJSON(includeExports)
     }
   }
 
   static fromJSON (data) {
-    return new ActorRef(ID.fromJSON(data.id), ModuleRef.fromJSON(data.mod))
+    return new ActorRef(ID.fromJSON(data.id), ModuleRef.fromJSON(data.modref))
   }
 
   encodeCBOR (gen) {
@@ -187,24 +187,24 @@ class ModuleRef {
    * @param {ID} id - the id of the module
    * @param {Number} type - type id of the module
    * @param {Object} exports - a map of exported function to params for the function, if any
-   * @param {Object} state - state of the module
+   * @param {Object} persist - persist of the module
    * @param {Buffer} code - code of the module
    */
-  constructor (id, type, exports, state, code) {
+  constructor (id, type, exports, persist, code) {
     this.id = id
     this.type = type
     this.exports = exports
-    this.state = state
+    this.persist = persist
     this.code = {'/': code}
   }
 
   toJSON (includeParams = true) {
     const json = {
-      type: 'mod',
+      type: 'modref',
       id: this.id.toJSON(),
       modType: this.type,
       code: this.code['/'] ? `0x${this.code['/'].toString('hex')}` : null,
-      state: this.state
+      persist: this.persist
     }
     if (includeParams) {
       json.exports = this.exports
@@ -213,11 +213,11 @@ class ModuleRef {
   }
 
   static fromJSON (data) {
-    return new ModuleRef(ID.fromJSON(data.id), data.modType, data.exports, data.state, Buffer.from(data.code.slice(2), 'hex'))
+    return new ModuleRef(ID.fromJSON(data.id), data.modType, data.exports, data.persist, Buffer.from(data.code.slice(2), 'hex'))
   }
 
   encodeCBOR (gen) {
-    return gen.write(new cbor.Tagged(TAGS.mod, [this.id, this.type, this.exports, this.state, this.code]))
+    return gen.write(new cbor.Tagged(TAGS.mod, [this.id, this.type, this.exports, this.persist, this.code]))
   }
 }
 
