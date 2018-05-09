@@ -40,11 +40,11 @@ const fromJSON = arg => {
     }
 
     switch (arg.type) {
-      case 'func':
+      case 'funcref':
         return FunctionRef.fromJSON(arg)
-      case 'actor':
+      case 'actorref':
         return ActorRef.fromJSON(arg)
-      case 'mod':
+      case 'modref':
         return ModuleRef.fromJSON(arg)
     }
   }

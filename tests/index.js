@@ -93,10 +93,10 @@ tape('utils', t => {
     Buffer.from([1, 2, 3, 4])
   ]
   const json = utils.toJSON(obj)
-  t.deepEquals(JSON.stringify(json), '[{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[],"exports":{"name":["i32"]}},{"type":"actor","id":"0x02","mod":{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[],"exports":{"name":["i32"]}}},{"type":"func","actorID":"0x02","private":false,"name":"main","gas":100,"params":["i32"]},"0x01020304"]')
+  t.deepEquals(JSON.stringify(json), '[{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[],"exports":{"name":["i32"]}},{"type":"actorref","id":"0x02","modref":{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[],"exports":{"name":["i32"]}}},{"type":"funcref","actorID":"0x02","private":false,"name":"main","gas":100,"params":["i32"]},"0x01020304"]')
 
   const jsonPartial = utils.toJSON(obj, false)
-  t.deepEquals(JSON.stringify(jsonPartial), '[{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[]},{"type":"actor","id":"0x02","mod":{"type":"mod","id":"0x01","modType":1,"code":"0x636f6465","state":[]}},{"type":"func","actorID":"0x02","private":false,"name":"main","gas":100},"0x01020304"]')
+  t.deepEquals(JSON.stringify(jsonPartial), '[{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[]},{"type":"actorref","id":"0x02","modref":{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[]}},{"type":"funcref","actorID":"0x02","private":false,"name":"main","gas":100},"0x01020304"]')
 
   const modRefPartial = new objects.ModuleRef(id, 1, undefined, [], Buffer.from('code'))
   const objPartial = [
