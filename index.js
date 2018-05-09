@@ -21,7 +21,7 @@ const decoder = new cbor.Decoder({
     [TAGS.func]: val => new FunctionRef({
       identifier: val[0],
       params: val[1],
-      actorID: val[2],
+      actorId: val[2],
       gas: val[3]
     }),
     [TAGS.mod]: val => {
@@ -74,13 +74,13 @@ class FunctionRef {
    * @param {Array} opts.identifier - the function's identifier
    * @param {Boolean} opts.identifier[0] - true if private function
    * @param {String} opts.identifier[1] - name of exported function, or table index if private
-   * @param {ID} opts.actorID - the id of the actor
+   * @param {ID} opts.actorId - the id of the actor
    * @param {Array} opts.params - the params of the function
    * @param {Number} opts.gas - gas amount
    */
   constructor (opts) {
     this.identifier = opts.identifier
-    this.actorID = opts.actorID
+    this.actorId = opts.actorId
     this.params = opts.params
     this.gas = opts.gas || 0
   }
@@ -89,7 +89,7 @@ class FunctionRef {
     return gen.write(new cbor.Tagged(TAGS.func, [
       this.identifier,
       this.params,
-      this.actorID,
+      this.actorId,
       this.gas
     ]))
   }
@@ -97,7 +97,7 @@ class FunctionRef {
   toJSON (includeParams = true) {
     const json = {
       type: 'funcref',
-      actorID: this.actorID.toJSON(),
+      actorId: this.actorId.toJSON(),
       private: this.identifier ? this.identifier[0] : null,
       name: this.identifier ? this.identifier[1] : null,
       gas: this.gas
@@ -111,7 +111,7 @@ class FunctionRef {
   static fromJSON (data) {
     return new FunctionRef({
       identifier: [data.private, data.name],
-      actorID: ID.fromJSON(data.actorID),
+      actorId: ID.fromJSON(data.actorId),
       params: data.params,
       gas: data.gas
     })
@@ -124,7 +124,7 @@ class FunctionRef {
   copy () {
     return new FunctionRef({
       identifier: this.identifier,
-      actorID: this.actorID,
+      actorId: this.actorId,
       params: this.params,
       gas: this.gas
     })
@@ -158,7 +158,7 @@ class ActorRef {
     return new FunctionRef({
       identifier: [false, name],
       params,
-      actorID: this.id
+      actorId: this.id
     })
   }
 
