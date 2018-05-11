@@ -94,7 +94,7 @@ class FunctionRef {
     ]))
   }
 
-  toJSON (includeParams = true) {
+  toJSON (verbose = true) {
     const json = {
       type: 'funcref',
       actorId: this.actorId.toJSON(),
@@ -102,7 +102,7 @@ class FunctionRef {
       name: this.identifier ? this.identifier[1] : null,
       gas: this.gas
     }
-    if (includeParams) {
+    if (verbose) {
       json.params = this.params
     }
     return json
@@ -162,11 +162,11 @@ class ActorRef {
     })
   }
 
-  toJSON (includeExports = true) {
+  toJSON (verbose = true) {
     return {
       type: 'actorref',
       id: this.id.toJSON(),
-      modref: this.modRef.toJSON(includeExports)
+      modref: this.modRef.toJSON(verbose)
     }
   }
 
@@ -198,18 +198,23 @@ class ModuleRef {
     this.code = {'/': code}
   }
 
-  toJSON (includeParams = true) {
-    const json = {
+  toJSON (verbose = true) {
+    let code = this.code['/']
+      ? `0x${this.code['/'].toString('hex')}`
+      : null
+
+    if (code && !verbose) {
+      code = code.substring(0, 10) + '...'
+    }
+
+    return {
       type: 'modref',
       id: this.id.toJSON(),
       modType: this.type,
-      code: this.code['/'] ? `0x${this.code['/'].toString('hex')}` : null,
+      code,
+      exports: this.exports,
       persist: this.persist
     }
-    if (includeParams) {
-      json.exports = this.exports
-    }
-    return json
   }
 
   static fromJSON (data) {

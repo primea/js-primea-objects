@@ -80,7 +80,7 @@ tape('actor IDs', t => {
 tape('utils', t => {
   const id = new objects.ID(Buffer.from([0x1]))
   const id2 = new objects.ID(Buffer.from([0x2]))
-  const modRef = new objects.ModuleRef(id, 1, {'name': ['i32']}, [], Buffer.from('code'))
+  const modRef = new objects.ModuleRef(id, 1, {'name': ['i32']}, [], Buffer.from('0061736d01000000', 'hex'))
   const obj = [
     modRef,
     new objects.ActorRef(id2, modRef),
@@ -93,12 +93,12 @@ tape('utils', t => {
     Buffer.from([1, 2, 3, 4])
   ]
   const json = utils.toJSON(obj)
-  t.deepEquals(JSON.stringify(json), '[{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[],"exports":{"name":["i32"]}},{"type":"actorref","id":"0x02","modref":{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[],"exports":{"name":["i32"]}}},{"type":"funcref","actorId":"0x02","private":false,"name":"main","gas":100,"params":["i32"]},"0x01020304"]')
+  t.deepEquals(JSON.stringify(json), '[{"type":"modref","id":"0x01","modType":1,"code":"0x0061736d01000000","exports":{"name":["i32"]},"persist":[]},{"type":"actorref","id":"0x02","modref":{"type":"modref","id":"0x01","modType":1,"code":"0x0061736d01000000","exports":{"name":["i32"]},"persist":[]}},{"type":"funcref","actorId":"0x02","private":false,"name":"main","gas":100,"params":["i32"]},"0x01020304"]')
 
   const jsonPartial = utils.toJSON(obj, false)
-  t.deepEquals(JSON.stringify(jsonPartial), '[{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[]},{"type":"actorref","id":"0x02","modref":{"type":"modref","id":"0x01","modType":1,"code":"0x636f6465","persist":[]}},{"type":"funcref","actorId":"0x02","private":false,"name":"main","gas":100},"0x01020304"]')
+  t.deepEquals(JSON.stringify(jsonPartial), '[{"type":"modref","id":"0x01","modType":1,"code":"0x0061736d...","exports":{"name":["i32"]},"persist":[]},{"type":"actorref","id":"0x02","modref":{"type":"modref","id":"0x01","modType":1,"code":"0x0061736d...","exports":{"name":["i32"]},"persist":[]}},{"type":"funcref","actorId":"0x02","private":false,"name":"main","gas":100},"0x01020304"]')
 
-  const modRefPartial = new objects.ModuleRef(id, 1, undefined, [], Buffer.from('code'))
+  const modRefPartial = new objects.ModuleRef(id, 1, {'name': ['i32']}, [], Buffer.from('0061736d', 'hex'))
   const objPartial = [
     modRefPartial,
     new objects.ActorRef(id2, modRefPartial),

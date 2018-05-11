@@ -12,20 +12,18 @@ const toHex = arg => Buffer.isBuffer(arg) ? `0x${arg.toString('hex')}` : arg
 
 const fromHex = arg => typeof arg !== 'string' ? arg : Buffer.from(arg.slice(0, 2) === '0x' ? arg.slice(2) : arg, 'hex')
 
-const toJSON = (arg, includeOptional = true) => {
+const toJSON = (arg, verbose = true) => {
   switch (getType(arg)) {
     case 'elem':
-      return arg.map(a => toJSON(a, includeOptional))
+      return arg.map(a => toJSON(a, verbose))
     case 'id':
     case 'func':
     case 'mod':
     case 'actor':
-      return arg.toJSON(includeOptional)
+      return arg.toJSON(verbose)
     case 'link':
       return {
-        '@Link': {
-          '/': toJSON(arg['/'], includeOptional)
-        }
+        '/': toJSON(arg['/'], verbose)
       }
     case 'data':
     default:
