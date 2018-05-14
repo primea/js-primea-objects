@@ -31,6 +31,9 @@ objects.decoder.decodeFirst(encodedModRef)
 # API
 [./docs/](./docs/index.md)
 
+# SPONSERED BY
+[![](assests/dfinity.png)](www.dfinity.org)
+
 # LICENSE
 [MPL-2.0][LICENSE]
 
