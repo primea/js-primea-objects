@@ -34,7 +34,8 @@ const decoder = new cbor.Decoder({
         '/': val
       }
     }
-  }
+  },
+  size: 4194304 // set heap usage to 4MB
 })
 
 /**
