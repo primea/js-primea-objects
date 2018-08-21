@@ -219,7 +219,13 @@ class ModuleRef {
   }
 
   static fromJSON (data) {
-    return new ModuleRef(ID.fromJSON(data.id), data.modType, data.exports, data.persist, Buffer.from(data.code.slice(2), 'hex'))
+    return new ModuleRef(
+      ID.fromJSON(data.id),
+      data.modType,
+      data.exports,
+      data.persist.map(p => p == null ? undefined : p),
+      Buffer.from(data.code.slice(2), 'hex')
+    )
   }
 
   encodeCBOR (gen) {
